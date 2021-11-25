@@ -17,9 +17,11 @@ const Header = ({ login, signOut, ...props }) => {
       <button
         className={` ${isMenuOpen ? 'nav__menu_close' : 'nav__menu'}`}
         onClick={isMenuOpen ? handleCloseMenu : handleOpenMenu}
-      ></button>
+      />
       <div className={`nav ${isMenuOpen ? 'nav__open' : 'nav__hidden'}`}>
-        {() => (login ? <p className='nav__info'>{props.userEmail}</p> : '')}
+        {login ? (
+          <p className='nav__info'>{props.userEmail.data.email}</p>
+        ) : null}
         <Link to={props.link} onClick={signOut} className='button'>
           {props.message}
         </Link>
