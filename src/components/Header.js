@@ -11,6 +11,7 @@ const Header = ({ login, signOut, ...props }) => {
   const handleCloseMenu = () => {
     setIsMenuOpen(false);
   };
+
   return (
     <header className={`header ${isMenuOpen ? 'header__open' : ''}`}>
       <div className='logo' />
@@ -19,9 +20,7 @@ const Header = ({ login, signOut, ...props }) => {
         onClick={isMenuOpen ? handleCloseMenu : handleOpenMenu}
       />
       <div className={`nav ${isMenuOpen ? 'nav__open' : 'nav__hidden'}`}>
-        {login ? (
-          <p className='nav__info'>{props.userEmail.data.email}</p>
-        ) : null}
+        {login ? <p className='nav__info'>{props.userEmail}</p> : null}
         <Link to={props.link} onClick={signOut} className='button'>
           {props.message}
         </Link>

@@ -33,18 +33,13 @@ const EditProfilePopup = (props) => {
     <PopupWithForm
       isOpen={props.isOpen}
       onSubmit={handleSubmit}
+      onClose={props.onClose}
       header='Edit Profile'
       buttonText='Save'
       id='popupEdit'
       formId='profileInfo'
       formName='editForm'
     >
-      <button
-        className='popup__close button'
-        type='button'
-        aria-label='Close'
-        onClick={props.onClose}
-      />
       <div className='popup__input-container' id='popupInfoContainer'>
         <input
           className='popup__input popup__input_edit_title'

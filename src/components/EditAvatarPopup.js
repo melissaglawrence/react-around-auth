@@ -14,18 +14,13 @@ const EditAvatarPopup = (props) => {
     <PopupWithForm
       isOpen={props.isOpen}
       onSubmit={handleSubmit}
+      onClose={props.onClose}
       header='Change Profile Picture'
       buttonText='Save'
       id='popupProfilePicture'
       formId='profilePictureInfo'
       formName='editPicture'
     >
-      <button
-        className='popup__close button'
-        type='button'
-        aria-label='Close'
-        onClick={props.onClose}
-      />
       <div className='popup__input-container' id='popupInfoContainer'>
         <input
           className='popup__input popup__input_edit_title'

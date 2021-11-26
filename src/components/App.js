@@ -140,15 +140,23 @@ const App = () => {
 
   //TOKENCHECK
   const jwt = localStorage.getItem('jwt');
+  const email = localStorage.getItem('user');
   const tokenCheck = useCallback(() => {
     if (jwt) {
-      auth.getUser(jwt).then((data) => {
-        if (data) {
-          setUserData(data);
-          setLogin(true);
-          history.push('/');
-        }
-      });
+      auth
+        .getUser(jwt)
+        .then((data) => {
+          if (data) {
+            setUserData(email);
+            setLogin(true);
+            history.push('/');
+          } else {
+            setMessage('Token not provided or provided in the wrong format');
+          }
+        })
+        .catch(() => {
+          setMessage('The provided token is invalid ');
+        });
     }
     return;
   }, [history, jwt]);
@@ -159,18 +167,22 @@ const App = () => {
 
   //LOGIN FUNCTIONALITY
   const handleLogin = (data) => {
-    auth.signIn(data).then((data) => {
-      if (!data) {
-        return setMessage('the user with the specified email not found');
-      }
-      if (data) {
-        setMessage('');
-        setUserData(data);
-        setLogin(true);
-        history.push('/');
-        return;
-      }
-    });
+    auth
+      .signIn(data)
+      .then((data) => {
+        if (!data) {
+          return setMessage('the user with the specified email not found');
+        }
+        if (data) {
+          setMessage('');
+          setLogin(true);
+          history.push('/');
+          return;
+        }
+      })
+      .catch(() => {
+        setMessage('one or more of the fields were not provided');
+      });
   };
 
   const handleSignOut = () => {
@@ -192,77 +204,77 @@ const App = () => {
         } else {
           setIsTooltipOpen(true);
           setIsSignUpSuccess(false);
-          return setMessage('An error occured');
+          return setMessage('One of the fields was filled in incorrectly');
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        setIsTooltipOpen(true);
+        setIsSignUpSuccess(false);
+        return setMessage('An error occured');
       });
   };
 
   return (
-    <Switch>
-      <Route path='/signin'>
-        <Login onLogin={handleLogin} message={message} />
+    <>
+      <CurrentUserContext.Provider value={currentUser}>
+        <Switch>
+          <Route path='/signin'>
+            <Login onLogin={handleLogin} message={message} />
+          </Route>
+          <Route path='/signup'>
+            <Register onRegister={handleRegister} message={message} />
+          </Route>
+          <ProtectedRoute exact path='/' login={login}>
+            <Header
+              link={'/signin'}
+              message='Sign Out'
+              login={login}
+              signOut={handleSignOut}
+              userEmail={userData}
+            />
+            <Main
+              cards={cards}
+              onEditAvatarClick={handleAvatarClick}
+              onEditProfileClick={handleProfileClick}
+              onAddPlaceClick={handleAddPlaceClick}
+              onCardClick={handleCardClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
+
+            <Footer />
+          </ProtectedRoute>
+          <Route path='/'>
+            {login ? <Redirect to='/' /> : <Redirect to='/signin' />}
+          </Route>
+        </Switch>
         <InfoTooltip
           isOpen={isTooltipOpen}
           onClose={closeAllPopups}
           isSuccessful={isSignUpSuccess}
         />
-      </Route>
-      <Route path='/signup'>
-        <Register onRegister={handleRegister} message={message} />
-        <InfoTooltip
-          isOpen={isTooltipOpen}
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-          isSuccessful={isSignUpSuccess}
+          onUpdateUser={handleUpdateUser}
         />
-      </Route>
-      <ProtectedRoute exact path='/' login={login}>
-        <CurrentUserContext.Provider value={currentUser}>
-          <Header
-            link={'/signin'}
-            message='Sign Out'
-            login={login}
-            signOut={handleSignOut}
-            userEmail={userData}
-          />
-          <Main
-            cards={cards}
-            onEditAvatarClick={handleAvatarClick}
-            onEditProfileClick={handleProfileClick}
-            onAddPlaceClick={handleAddPlaceClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
-          />
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-          />
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-          />
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar}
-          />
-          <ImagePopup
-            card={selectedCard}
-            isOpen={isImageOpen}
-            onClose={closeAllPopups}
-          />
-          <Footer />
-        </CurrentUserContext.Provider>
-      </ProtectedRoute>
-      <Route exact path='/'>
-        {login ? <Redirect to='/' /> : <Redirect to='/signin' />}
-      </Route>
-    </Switch>
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit}
+        />
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+        />
+        <ImagePopup
+          card={selectedCard}
+          isOpen={isImageOpen}
+          onClose={closeAllPopups}
+        />
+      </CurrentUserContext.Provider>
+    </>
   );
 };
 
