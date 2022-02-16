@@ -1,8 +1,16 @@
-Around the U.S. project on React, featuring authorization and registration.
+# react-around-auth
 
-This repository will contain your own front-end project on React with added authorization and registration features.
-Start working with your previously built front end code from Sprint 11.
+This repository added authorization to the Around the US app
 
-All authorization, registration and token requests must go through to the server running on [https://register.nomoreparties.co](https://register.nomoreparties.co/).
+# Link to site
 
-Good luck!
+https://www.melissalawrence.students.nomoreparties.site/
+
+# Tech
+
+Created using React
+Responsive CSS using BEM file structure for organization.
+
+# Functionality
+
+Users are now able to Sign up and Log in. After successful log in users can cusomize their profiles name, about and avatar. They can also create or delete cards of their favorite pictures, see and like other users pictures.
